@@ -1,0 +1,11 @@
+using UnityEngine;
+
+public class PlayerStateList : MonoBehaviour
+{
+    public bool jumping = false;
+    public bool dashing = false;
+    public bool attack = false;
+    public bool lookingRight;
+    public bool invincible;
+    public bool healing;
+}
