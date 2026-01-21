@@ -1,7 +1,7 @@
 
 ## Niên luận ngành: *Phát triển game 2D platform trên Unity*
->Logo: Updating ...
->Giới thiệu Game: Updating ...
+>Logo: Updating ...  
+>Giới thiệu Game: Updating ...  
 ## Cấu trúc cây thư mục
 * Asset/  
   *  Animation/: Chứa Animator và Animation của các đối tượng trong game theo từng thư mục.  
@@ -25,8 +25,8 @@
   *  Tiles/: Chứa các tile  của trò chơi.  
 ## Thông tin người chơi 
 ***Người chơi***
-Máu tối đa: 10
-Stamina tối đa: 100
+Máu tối đa: 10  
+Stamina tối đa: 100  
 | Hành động | Mô tả | Điều kiện | Ảnh |
 |--|--|--|--|
 | Di chuyển | Người chơi di chuyển theo trục x với tốc độ 5 đơn vị mỗi frame | Ấn phím A, D | Updating ... |
