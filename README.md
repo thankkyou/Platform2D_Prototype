@@ -1,8 +1,8 @@
 # Platform2D_Prototype
 ## Cấu trúc cây thư mục
-*Asset/
-  *Animation/: Chứa Animator và Animation của các đối tượng trong game theo từng thư mục.  
-  *Audio/: Chứa các file âm thanh  
+* Asset/  
+  *  Animation/: Chứa Animator và Animation của các đối tượng trong game theo từng thư mục.  
+  *  Audio/: Chứa các file âm thanh  
       *Background Music/: Chứa nhạc nền của trò chơi.  
       *UI SFX/: Chứa các hiệu ứng âm thanh khi tương tác với UI.  
   		*Gameplay SFX/: Chứa các hiệu ứng âm thanh khi chơi trò chơi.  
