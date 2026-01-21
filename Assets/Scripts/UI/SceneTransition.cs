@@ -9,6 +9,7 @@ public class SceneTransition : MonoBehaviour
 
     private bool triggered;
 
+    //Xử lí va chạn người chơi
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (triggered) return;
@@ -20,6 +21,7 @@ public class SceneTransition : MonoBehaviour
         }
     }
 
+    //Đổi màn
     private IEnumerator LoadScene()
     {
         yield return ScreenFader.Instance.FadeOut();

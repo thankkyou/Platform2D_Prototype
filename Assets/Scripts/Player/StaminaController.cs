@@ -14,14 +14,14 @@ public class StaminaController : MonoBehaviour
 
     public delegate void OnStaminaChanged();
     public OnStaminaChanged OnStaminaChangedCallback;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         currentStamina = maxStamina;
         OnStaminaChangedCallback?.Invoke();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         Regenerate();

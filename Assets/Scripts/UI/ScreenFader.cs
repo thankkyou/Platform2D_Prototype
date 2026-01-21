@@ -15,6 +15,7 @@ public class ScreenFader : MonoBehaviour
             Instance = this;
     }
 
+    //Hiệu ứng fade
     public IEnumerator FadeOut()
     {
         float t = 0;

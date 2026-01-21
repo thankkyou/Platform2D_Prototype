@@ -12,14 +12,14 @@ public class PlayerController : MonoBehaviour
     [Header("Vertical Movement Settings:")]
     [SerializeField] private float jumpForce = 45f;
     private float jumpBufferCounter = 0;
-    [SerializeField] private float jumpBufferFrames;
-    private float coyoteTimeCounter = 0;
-    [SerializeField] private float coyoteTime;
+    [SerializeField] private float jumpBufferFrames; //ghi nhớ nút nhảy sau vài frame
+    private float coyoteTimeCounter = 0; //đếm ngược thời gian nhớ
+    [SerializeField] private float coyoteTime; //cho phép nhảy sau khi rời đất
     private int airJumpCounter = 0;
     [SerializeField] private int maxAirJumps;
     [Space(5)]
 
-    [Header("Ground Check Settings:")]
+    [Header("Ground Check Settings:")] 
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckY = 0.2f;
     [SerializeField] private float groundCheckX = 0.5f;
@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject dashEffect;
     [Space(5)]
 
-    [Header("Dash Through Settings")]
+    [Header("Dash Through Settings")] //Dash xuyên qua enemy
     [SerializeField] private LayerMask enemyLayer;
     [Space(5)]
 
@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask attackableLayer;
     private bool attack = false;
     private float damage = 2;
+    [Space(5)]
 
     bool restoreTime;
     float restoreTimeSpeed;
@@ -74,28 +75,31 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public OnHealthChangedDelegate OnHealthChangedCallback;
     [Space(5)]
 
-    [Header("I-Frame Settings")]
+    [Header("I-Frame Settings")] //Bất tử sau khi nhận đòn
     [SerializeField] private float iFrameDuration = 0.5f;
-    [SerializeField] private int numberOfFlash;
+    [SerializeField] private int numberOfFlash; //Nhấp nhát khi bất tử
     private Coroutine iFrameCoroutine;
+    [Space(5)]
 
     [Header("Knockback Settings")]
     [SerializeField] private float knockbackForceX = 6f;
     [SerializeField] private float knockbackForceY = 2f;
     [SerializeField] private float knockbackDuration = 0.2f;
     private bool isKnockback;
+    [Space(5)]
 
     [Header("Heal Settings")]
     [SerializeField] private int maxHealPotions = 3;
     [SerializeField] private int healAmount = 2;
     [SerializeField] private float healCooldown = 2f;
-    [SerializeField] private float healCastTime = 1.2f; // ⏳ thời gian cast
+    [SerializeField] private float healCastTime = 1.2f; 
+    [Space(5)]
 
     public int currentHealPotions;
     private float healCooldownTimer;
     private float healCastTimer;
     private bool isHealingCasting;
-    public float HealCooldownTimer => healCooldownTimer;
+    public float HealCooldownTimer => healCooldownTimer; //chỉ đọc
     public float HealCooldown => healCooldown;
 
 
@@ -116,10 +120,10 @@ public class PlayerController : MonoBehaviour
     private bool isWallJumping;
     private bool isWallSliding;
 
+    //Single Skeleton
     public static PlayerController Instance;
     private void Awake()
     {
-
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -132,6 +136,7 @@ public class PlayerController : MonoBehaviour
         Health = maxHealth;
     }
 
+    //Lấy tham chiếu
     void Start()
     {
         pState = GetComponent<PlayerStateList>();
@@ -143,6 +148,7 @@ public class PlayerController : MonoBehaviour
         stamina = GetComponent<StaminaController>();
     }
 
+    //Vẽ hitbox
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -151,6 +157,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //Chặn input khi bị knockback
          if (isKnockback)
         {
             UpdateAnimatorParameters();
@@ -160,7 +167,10 @@ public class PlayerController : MonoBehaviour
         GetInputs();
         UpdateJumpVariables();
         StartDash();
+
+        //Chặn input khi dash
         if (pState.dashing) return;
+
         Flip();
         Move();
         WallSlide();
@@ -173,9 +183,10 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (pState.dashing) return ;
+        if (pState.dashing) return;
     }
 
+    //Đọc input và lưu vào biến
     void GetInputs()
     {
         xAxis = Input.GetAxisRaw("Horizontal");
@@ -183,6 +194,7 @@ public class PlayerController : MonoBehaviour
         attack = Input.GetButtonDown("Attack");
     }
 
+    //Flip nhân vật theo local scale
     void Flip()
     {
         if (isAttacking) return;
@@ -199,9 +211,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //Di chuyển 
     private void Move()
     {   
-
+        // KHÓA DI CHUYỂN KHI BỊ KNOCKBACK
         if (isKnockback) return;
 
         // KHÓA DI CHUYỂN KHI ĐANG HEAL
@@ -210,7 +223,6 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             return;
         }
-
 
         // KHÓA DI CHUYỂN KHI ĐANG ATTACK
         if (isAttacking) 
@@ -222,6 +234,7 @@ public class PlayerController : MonoBehaviour
         // KHÓA DI CHUYỂN KHI CHẾT
         if (isDead) return;
 
+        // KHÓA DI CHUYỂN KHI NHẢY TƯỜNG
         if (isWallJumping) return;
 
         rb.linearVelocity = new Vector2(walkSpeed * xAxis, rb.linearVelocity.y);
@@ -230,6 +243,7 @@ public class PlayerController : MonoBehaviour
 
     void StartDash()
     {
+
         if (isKnockback) return;
         if (Input.GetButtonDown("Dash")
         && canDash
@@ -237,7 +251,7 @@ public class PlayerController : MonoBehaviour
         && stamina != null
         && stamina.CanDash())
         {
-            stamina.ConsumeDashStamina(); // TRỪ STAMINA
+            stamina.ConsumeDashStamina(); //TRỪ STAMINA
             StartCoroutine(Dash());
             dashed = true;
         }
@@ -256,62 +270,69 @@ public class PlayerController : MonoBehaviour
 
         anim.SetTrigger("Dashing");
 
-        rb.gravityScale = 0;
+        rb.gravityScale = 0;    //BỎ QUA TRỌNG LỰC KHI DASH (AIR DASH KHÔNG BỊ RỚT)
         rb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0);
 
+        //BỎ QUA VA CHẠM
         Physics2D.IgnoreLayerCollision(
         LayerMask.NameToLayer("Player"),
         LayerMask.NameToLayer("Attackable"),
         true
         );
 
-        if (Grounded()) Instantiate(dashEffect, transform);
-        yield return new WaitForSeconds(dashTime);
+        if (Grounded()) Instantiate(dashEffect, transform); //DASH VFX
+        yield return new WaitForSeconds(dashTime); //THỜI GIAN DASH
 
          // TẮT DASH
-        rb.gravityScale = gravity;
+        rb.gravityScale = gravity; //BẬT LẠI TRỌNG LỰC
         pState.dashing = false;
         pState.invincible = false;
 
-        // BẬT LẠI VA CHẠM
+        //BẬT LẠI VA CHẠM
         Physics2D.IgnoreLayerCollision(
             LayerMask.NameToLayer("Player"),
             LayerMask.NameToLayer("Attackable"),
             false
         );
 
-        yield return new WaitForSeconds(dashCooldown);
+        yield return new WaitForSeconds(dashCooldown); //THỜI GIAN HỒI LẠI DASH
         canDash = true;
     }
 
     void Attack()
     {
+        //KHÓA TẤN CÔNG KHI BỊ KNOCKBACK
         if (isKnockback) return;
 
+        //KHÔNG CHO AIR ATTACK
         if (!Grounded()) return;
 
         // Giảm timer combo
         if (comboTimer > 0)
             comboTimer -= Time.deltaTime;
 
+        //CHỈ ĐÁNH KHI CÓ INPUT ATTACK
         if (!attack) return;
+
+        //KHÓA DASH KHI TẤN CÔNG
         if (pState.dashing) return;
 
-        // Nếu đang đánh → buffer input
+        // BUFFER ATTACK
         if (isAttacking)
         {
             attackBuffered = true;
             return;
         }
-
-        // Nếu hết thời gian combo → reset trước khi đánh
+       
         if (comboTimer <= 0)
             comboStep = 0;
-
+            
         comboStep++;
+
         if (comboStep > 3)
             comboStep = 1;
 
+        // RESET COMBO SAU KHI HẾT THỜI GIAN
         comboTimer = comboResetTime;
 
         isAttacking = true;
@@ -321,6 +342,7 @@ public class PlayerController : MonoBehaviour
         DoComboHit();
     }
 
+    //HỦY ATK
     void CancelAttack()
     {
         isAttacking = false;
@@ -334,11 +356,10 @@ public class PlayerController : MonoBehaviour
         anim.SetInteger("ComboStep", 0);
     }
 
-
-
     // Gọi từ Animation Event ở frame cuối mỗi animation attack
     public void CheckForBufferedAttack()
     {   
+        //CHUYỂN VỂ FALSE ĐỂ NHẬN INPUT MỚI
         pState.attack = false;
         isAttacking = false;
 
@@ -348,7 +369,7 @@ public class PlayerController : MonoBehaviour
 
             comboStep++;
             if (comboStep > 3)
-                comboStep = 1;
+                comboStep = 1; //RESET COMBO
 
             comboTimer = comboResetTime;
 
@@ -365,6 +386,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //DAMEMAGE MULTIPLY
     void DoComboHit()
     {
         float finalDamage = damage;
@@ -377,40 +399,43 @@ public class PlayerController : MonoBehaviour
         Hit(SideAttackTransform, SideAttackArea, finalDamage);
     }
 
-    private void Hit(Transform _attackTransform, Vector2 _attackArea, float _damage)
+    //Kiểm tra va chạm và gây dame
+    private void Hit(Transform _attackTransform, Vector2 _attackArea, float _damage) //TÂM HITBOX, KÍCH THƯỚC, DAMAGE
     {
         Collider2D[] objectsToHit = Physics2D.OverlapBoxAll(
             _attackTransform.position,
             _attackArea,
             0,
             attackableLayer
-        );
+        ); //TRẢ VỀ TẤT CẢ COLLIDER NẰM TRONG HITBOX
 
         for (int i = 0; i < objectsToHit.Length; i++)
         {
-            Enemy enemy = objectsToHit[i].GetComponent<Enemy>();
+            Enemy enemy = objectsToHit[i].GetComponent<Enemy>(); //DUYỆT QUA CÁC COLLIDER CỦA ENEMY
             if (enemy != null)
             {
                 enemy.EnemyHit(_damage);
-            }
+            } //NẾU CÓ COLLIDER GÂY DAME
         }
     }
 
+    //Kiểm tra ground dưới chân
     public bool Grounded()
     {
-        return Physics2D.Raycast(groundCheckPoint.position, Vector2.down, groundCheckY, whatIsGround)
-            || Physics2D.Raycast(groundCheckPoint.position + new Vector3(groundCheckX, 0, 0), Vector2.down, groundCheckY, whatIsGround)
-            || Physics2D.Raycast(groundCheckPoint.position + new Vector3(-groundCheckX, 0, 0), Vector2.down, groundCheckY, whatIsGround);
+        return Physics2D.Raycast(groundCheckPoint.position, Vector2.down, groundCheckY, whatIsGround) //Kiểm tra giữa
+            || Physics2D.Raycast(groundCheckPoint.position + new Vector3(groundCheckX, 0, 0), Vector2.down, groundCheckY, whatIsGround) //Kiểm tra mép trái
+            || Physics2D.Raycast(groundCheckPoint.position + new Vector3(-groundCheckX, 0, 0), Vector2.down, groundCheckY, whatIsGround); //Kiểm tra mép phải
     }
-
+    //Kiểm tra tường bên cạnh
     public bool IsWalled()
     {
         return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
     }
 
+    //Xử lí nhảy
     void Jump()
     {
-        if (isKnockback) return;
+        if (isKnockback) return; //Thoát hàm khi bị knockback
 
         // ATTACK CANCEL KHI NHẢY
         if (isAttacking && Input.GetButtonDown("Jump"))
@@ -418,30 +443,36 @@ public class PlayerController : MonoBehaviour
             CancelAttack();
         }
         
+        //Nhảy tường
         if (!Grounded() && IsWalled() && Input.GetButtonDown("Jump"))
         {
             isWallJumping = true;
             isWallSliding = false;
             pState.jumping = true;
 
-            float jumpDir = xAxis != 0 ? -Mathf.Sign(xAxis) : -Mathf.Sign(transform.localScale.x);
+            float jumpDir = xAxis != 0 //Kiểm tra có input trái/phải
+                ? -Mathf.Sign(xAxis) //ngược hướng input
+                : -Mathf.Sign(transform.localScale.x); //ngược hướng nhìn
 
-            rb.linearVelocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero; //reset lại vận tốc
             rb.AddForce(new Vector2(jumpDir * wallJumpForceX, wallJumpForceY), ForceMode2D.Impulse);
 
+            //Flip theo hướng nhảy
             float currentScaleAbsX = Mathf.Abs(transform.localScale.x);
             transform.localScale = new Vector2(jumpDir * currentScaleAbsX, transform.localScale.y);
 
+            //Khóa input tạm thời
             StartCoroutine(WallJumpLock());
             return;
         }
 
+        //Short-hop
         if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0 && !Grounded() && !isWallJumping)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
             pState.jumping = false;
         }
-
+        //Nhảy thường
         if (!pState.jumping)
         {
             if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
@@ -449,7 +480,7 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 pState.jumping = true;
             }
-            else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump"))
+            else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump")) //air-jump
             {
                 pState.jumping = true;
                 airJumpCounter++;
@@ -465,7 +496,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(wallJumpLockTime);
         isWallJumping = false;
     }
-
+    //Cập nhật biến phụ trợ cho jump
     void UpdateJumpVariables()
     {
         if (Grounded())
@@ -493,21 +524,21 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("WallSliding", false);
         }
     }
-
+    //trượt tường
     void WallSlide()
     {
         if (!Grounded()
             && IsWalled()
             && rb.linearVelocity.y < 0
-            && xAxis != 0
-            && Mathf.Sign(xAxis) == Mathf.Sign(transform.localScale.x)
+            && xAxis != 0 //đang giữ phím trái phải
+            && Mathf.Sign(xAxis) == Mathf.Sign(transform.localScale.x) //hướng input trùng với hướng quay mặt
             && !pState.dashing)
         {
             isWallSliding = true;
 
             rb.linearVelocity = new Vector2(
-                rb.linearVelocity.x,
-                Mathf.Clamp(rb.linearVelocity.y, -wallSlideSpeed, float.MaxValue)
+                rb.linearVelocity.x, //giữ vận tốc trục x
+                Mathf.Clamp(rb.linearVelocity.y, -wallSlideSpeed, float.MaxValue) //duy trì tốc độ không quá wallslidespeed
             );
         }
         else
@@ -517,7 +548,7 @@ public class PlayerController : MonoBehaviour
 
         anim.SetBool("WallSliding", isWallSliding);
     }
-
+    //Animation rơi
     void Fall()
     {
         bool isFalling =
@@ -529,11 +560,11 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("Falling", isFalling);
     }
 
+    //Đồng bộ trạng thái vật lí với animator
     void UpdateAnimatorParameters()
     {
         isGround = Grounded();
         velocityY = rb.linearVelocity.y;
-
         anim.SetBool("isGround", isGround);
         anim.SetFloat("velocityY", velocityY);
     }
@@ -549,13 +580,14 @@ public class PlayerController : MonoBehaviour
         anim.SetInteger("ComboStep", 0);
     }
 
+    //bất tử sau khí nhận dame
     IEnumerator iFrames()
     {
-        Physics2D.IgnoreLayerCollision(10, 8, true);
+        Physics2D.IgnoreLayerCollision(10, 8, true); //bỏ qua va chạm giữa layer 8, 10
         //Iframe duration
-        for (int i = 0; i < numberOfFlash; i++)
+        for (int i = 0; i < numberOfFlash; i++) //Nháy sprite
         {
-            sr.color = new Color(1, 0, 0, 0.5f);
+            sr.color = new Color(1, 0, 0, 0.5f); 
             yield return new WaitForSeconds(iFrameDuration / (numberOfFlash));
             sr.color = Color.white;
             yield return new WaitForSeconds(iFrameDuration / (numberOfFlash));
@@ -563,14 +595,15 @@ public class PlayerController : MonoBehaviour
         Physics2D.IgnoreLayerCollision(10, 8, false);
     }
 
+    //Xử lí khi nhân vật bị đánh
     public void TakeDamage(float _damage)
     {
-        if (pState.dashing || isDead || isKnockback) return;
+        if (pState.dashing || isDead || isKnockback) return; //không nhận dame
 
-        if (isHealingCasting)
+        if (isHealingCasting) //đang heal mà nhận dame sẽ thoát heal
             CancelHeal();
 
-        // Trừ máu trước
+        // Trừ máu 
         Health -= Mathf.RoundToInt(_damage);
 
         if (Health <= 0)
@@ -601,14 +634,15 @@ public class PlayerController : MonoBehaviour
         anim.ResetTrigger("TakeDamage");
         anim.SetTrigger("Die");
 
-        stamina?.ResetStamina();
+        stamina?.ResetStamina(); //Không null => reset stamina
     }
 
+    //Health property
     public int Health
     {
         get { return health; }
         set {
-            if (health != value)
+            if (health != value) //Health khác giá trị cũ
             {
                 health = Mathf.Clamp(value, 0, maxHealth);
 
@@ -644,7 +678,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            // ✅ Cast xong
+            //Cast xong
             if (healCastTimer >= healCastTime)
             {
                 FinishHeal();
@@ -704,6 +738,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("Healing", false);
     }
 
+    //hitstop
     public void HitStop(float timeScale, float duration)
     {
         StartCoroutine(HitStopCoroutine(timeScale, duration));
@@ -721,22 +756,22 @@ public class PlayerController : MonoBehaviour
 
     void ApplyKnockback()
     {
-        if (isKnockback) return;
+        if (isKnockback) return; //chặn knockback chồng
 
         isKnockback = true;
 
         // hướng bị đánh
         float dir = pState.lookingRight ? -1f : 1f;
 
-        rb.linearVelocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero; //reset vận tốc
         rb.AddForce(
             new Vector2(dir * knockbackForceX, knockbackForceY),
             ForceMode2D.Impulse
-        );
+        ); //đẩy
 
         anim.SetTrigger("TakeDamage");
 
-        StartCoroutine(KnockbackRoutine());
+        StartCoroutine(KnockbackRoutine()); //chờ knockback xong
     }
 
     IEnumerator KnockbackRoutine()
@@ -745,7 +780,7 @@ public class PlayerController : MonoBehaviour
         isKnockback = false;
     }
 
-    //Kiểm tra Animation "Die"
+    //Kiểm tra Animation Die
     public delegate void OnPlayerDeath();
     public event OnPlayerDeath OnDeathAnimationFinished;
     public void DieAnimationFinished()

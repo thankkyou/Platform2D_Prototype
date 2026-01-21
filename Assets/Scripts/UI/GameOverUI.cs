@@ -5,29 +5,31 @@ public class GameOverUI : MonoBehaviour
 {
      [SerializeField] private GameObject gameOverPanel;
 
+    //ẨN GAME OVER KHI GAME BẮT ĐẦU
     private void Awake()
     {
-        // ✅ ẨN GAME OVER KHI GAME BẮT ĐẦU
+        
         gameOverPanel.SetActive(false);
     }
 
+    //Lắng nghe event chết của Player
     private void Start()
     {
-        // Lắng nghe event chết của Player
         PlayerController.Instance.OnDeathAnimationFinished += ShowGameOver;
     }
 
+    // Tránh leak event
     private void OnDestroy()
     {
-        // Tránh leak event
         if (PlayerController.Instance != null)
             PlayerController.Instance.OnDeathAnimationFinished -= ShowGameOver;
     }
 
+    //Dừng game
     void ShowGameOver()
     {
         gameOverPanel.SetActive(true);
-        Time.timeScale = 0f; // ⏸️ Dừng game (tuỳ chọn)
+        Time.timeScale = 0f; //Dừng game
     }
 
 

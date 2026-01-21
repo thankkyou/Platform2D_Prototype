@@ -29,11 +29,6 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public virtual void EnemyHit(float _damageDone)
-    {
-        health -= _damageDone;
-
-    }
 
     protected void OnTriggerStay2D(Collider2D _other)
     {
@@ -43,7 +38,11 @@ public class Enemy : MonoBehaviour
             PlayerController.Instance.HitStop(0, 0.2f);
         }
     }
+    public virtual void EnemyHit(float _damageDone)
+    {
+        health -= (int)_damageDone;
 
+    }
     protected virtual void Attack()
     {
         PlayerController.Instance.TakeDamage(damage);
