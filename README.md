@@ -23,7 +23,7 @@
   *  Palettes/: Chứa các tile palette của trò chơi.  
   *  Scenes/: Chứa các scene có trong trò chơi  
   *  Tiles/: Chứa các tile  của trò chơi.  
-
+## Thông tin người chơi 
 ***Người chơi***
 Máu tối đa: 10
 Stamina tối đa: 100
@@ -45,7 +45,7 @@ Stamina tối đa: 100
 | Chết | Hoạt ảnh chết khi máu người chơi về 0 và hồi sinh tại điểm lưu gần nhất | Khi máu người chơi về 0 |  |
 | Tương tác vật phẩm, NPC | Updating ... |  |  |
 
-
+## Thông tin các loại quái vật
 ***Quái vật***
 | Tên | Thông tin | Mô tả | Ảnh |
 |--|--|--|--|
