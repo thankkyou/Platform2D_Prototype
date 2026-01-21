@@ -24,7 +24,7 @@
   *  Scenes/: Chứa các scene có trong trò chơi  
   *  Tiles/: Chứa các tile  của trò chơi.  
 ## Thông tin người chơi 
-***Người chơi***
+***Người chơi***  
 Máu tối đa: 10  
 Stamina tối đa: 100  
 | Hành động | Mô tả | Điều kiện | Ảnh |
@@ -46,7 +46,7 @@ Stamina tối đa: 100
 | Tương tác vật phẩm, NPC | Updating ... |  |  |
 
 ## Thông tin các loại quái vật
-***Quái vật***
+***Quái vật***  
 | Tên | Thông tin | Mô tả | Ảnh |
 |--|--|--|--|
 | Mộc tinh |  |  |  |
