@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -89,7 +90,7 @@ public class PlayerController : MonoBehaviour
     [Space(5)]
 
     [Header("Heal Settings")]
-    [SerializeField] private int maxHealPotions = 3;
+    [SerializeField] public int maxHealPotions = 3;
     [SerializeField] private int healAmount = 2;
     [SerializeField] private float healCooldown = 2f;
     [SerializeField] private float healCastTime = 1.2f; 
@@ -120,6 +121,9 @@ public class PlayerController : MonoBehaviour
     private bool isWallJumping;
     private bool isWallSliding;
 
+    public static System.Action OnPlayerSpawned;
+
+
     //Single Skeleton
     public static PlayerController Instance;
     private void Awake()
@@ -134,6 +138,9 @@ public class PlayerController : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         Health = maxHealth;
+        Debug.Log("Awake: Player new instance created. Health set to: " + Health + " / " + maxHealth);
+        OnPlayerSpawned?.Invoke();
+
     }
 
     //Lấy tham chiếu
@@ -146,6 +153,9 @@ public class PlayerController : MonoBehaviour
         gravity = rb.gravityScale;
         currentHealPotions = maxHealPotions;
         stamina = GetComponent<StaminaController>();
+
+        // Đảm bảo stamina full khi player spawn lần đầu hoặc respawn
+        stamina?.ResetStamina();
     }
 
     //Vẽ hitbox
@@ -163,22 +173,27 @@ public class PlayerController : MonoBehaviour
             UpdateAnimatorParameters();
             return;
         }
-
-        GetInputs();
-        UpdateJumpVariables();
-        StartDash();
+        if (pState.alive)
+        {
+            GetInputs();
+        }
 
         //Chặn input khi dash
         if (pState.dashing) return;
 
-        Flip();
-        Move();
-        WallSlide();
-        Fall();
-        Jump();
+        if (pState.alive)
+        {
+            UpdateJumpVariables();
+            StartDash();
+            Flip();
+            Move();
+            WallSlide();
+            Fall();
+            Jump();
+            Attack();
+            Heal();
+        }
         UpdateAnimatorParameters();
-        Attack();
-        Heal();
     }
 
     private void FixedUpdate()
@@ -214,6 +229,7 @@ public class PlayerController : MonoBehaviour
     //Di chuyển 
     private void Move()
     {   
+        if (pState.dashing) return;
         // KHÓA DI CHUYỂN KHI BỊ KNOCKBACK
         if (isKnockback) return;
 
@@ -593,33 +609,52 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(iFrameDuration / (numberOfFlash));
         }
         Physics2D.IgnoreLayerCollision(10, 8, false);
+
+        // pState.invincible = true;
+        // anim.SetTrigger("TakeDamage");
+        // yield return new WaitForSeconds(1f);
+        // pState.invincible = false;
     }
 
     //Xử lí khi nhân vật bị đánh
     public void TakeDamage(float _damage)
     {
+        if (pState.alive)
+        {
+            Health -= Mathf.RoundToInt(_damage);
+            if (Health <= 0)
+            {
+                Health = 0;
+                Die();
+            }
+            else
+            {
+                anim.SetTrigger("TakeDamage");
+                ApplyKnockback();
+                StartCoroutine(iFrames());
+            }
+        }
         if (pState.dashing || isDead || isKnockback) return; //không nhận dame
 
         if (isHealingCasting) //đang heal mà nhận dame sẽ thoát heal
             CancelHeal();
 
         // Trừ máu 
-        Health -= Mathf.RoundToInt(_damage);
+        // Health -= Mathf.RoundToInt(_damage);
 
-        if (Health <= 0)
-        {
-            Die();
-            return;
-        }
-        anim.SetTrigger("TakeDamage");
-        ApplyKnockback();
-        StartCoroutine(iFrames());
+        
+        // anim.SetTrigger("TakeDamage");
+        // ApplyKnockback();
+        // StartCoroutine(iFrames());
+
+        // Debug.Log("TakeDamage: Health reduced to " + Health);
     }
+    
 
     void Die()
     {
         if (isDead) return;
-
+        pState.alive = false;
         isDead = true;
 
         // Dừng mọi trạng thái
@@ -632,9 +667,41 @@ public class PlayerController : MonoBehaviour
         pState.invincible = false;
 
         anim.ResetTrigger("TakeDamage");
-        anim.SetTrigger("Die");
+        anim.SetTrigger("Death");
+
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),LayerMask.NameToLayer("Attackable"),true);
 
         stamina?.ResetStamina(); //Không null => reset stamina
+        StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+        // Invoke(nameof(Respawn), 1.5f);
+        Debug.Log("Die: Health = " + Health + " → Respawn invoked");
+    }
+
+    // IEnumerator Death()
+    // {
+    //     pState.alive = false;
+    //     Time.timeScale = 1;
+    //     anim.SetTrigger ("Death");
+
+    //     yield return new WaitForSeconds(0.9f);
+    //     Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),LayerMask.NameToLayer("Attackable"),true);
+    //     StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+    // }
+
+    public void Respawned()
+    {
+        isDead = false;
+        // rb.linearVelocity = Vector2.zero;
+        // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        if (!pState.alive)
+        {
+            pState.alive = true;
+            Health = maxHealth;
+            currentHealPotions = maxHealPotions;
+            ResetHeal();
+            anim.Play("player_idle");
+        }
     }
 
     //Health property
@@ -645,6 +712,7 @@ public class PlayerController : MonoBehaviour
             if (health != value) //Health khác giá trị cũ
             {
                 health = Mathf.Clamp(value, 0, maxHealth);
+                Debug.Log($"Health changed to {health}/{maxHealth}");
 
                 if (OnHealthChangedCallback != null)
                 {
@@ -738,6 +806,27 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("Healing", false);
     }
 
+    public void ResetHeal()
+    {
+        healCooldownTimer = 0f;
+        healCastTimer = 0f;
+        isHealingCasting = false;
+        pState.healing = false;
+
+        anim.SetBool("Healing", false);
+    }
+
+    public void FullRestore()
+    {
+        Health = maxHealth;
+        currentHealPotions = maxHealPotions;
+
+        ResetHeal();
+
+        stamina?.ResetStamina();
+    }
+
+
     //hitstop
     public void HitStop(float timeScale, float duration)
     {
@@ -780,13 +869,57 @@ public class PlayerController : MonoBehaviour
         isKnockback = false;
     }
 
+
     //Kiểm tra Animation Die
-    public delegate void OnPlayerDeath();
-    public event OnPlayerDeath OnDeathAnimationFinished;
-    public void DieAnimationFinished()
+    // public delegate void OnPlayerDeath();
+    // public event OnPlayerDeath OnDeathAnimationFinished;
+    // public void DieAnimationFinished()
+    // {
+    //     OnDeathAnimationFinished?.Invoke();
+    // }
+
+    private void OnEnable()
     {
-        OnDeathAnimationFinished?.Invoke();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Đặt vị trí spawn tại checkpoint đã lưu
+        SpawnPoint[] points = FindObjectsOfType<SpawnPoint>();
+        foreach (var point in points)
+        {
+            if (point.spawnID == GameManager.Instance.nextSpawnID)
+            {
+                transform.position = point.transform.position;
+                break;
+            }
+        }
+        Health = maxHealth;
+        currentHealPotions = maxHealPotions;
+        stamina?.ResetStamina();
+        ForceUpdateHealthUI();
+    }
+    //     // LUÔN FULL KHI LOAD SCENE (respawn)
+    //     Health = maxHealth;
+    //     currentHealPotions = maxHealPotions;
+    //     stamina?.ResetStamina();
+    //     ForceUpdateHealthUI();  // Force cho health UI
+
+    //     // Reset stamina về full
+    //     stamina?.ResetStamina();  // hoặc stamina?.FillStamina() tùy method của bạn
+
+    //     Debug.Log("OnSceneLoaded: Respawn/Scene load - Health forced to: " + Health + " / " + maxHealth);
+    //     Debug.Log("OnSceneLoaded: Potions = " + currentHealPotions);
+    // }
+
+    public void ForceUpdateHealthUI()
+    {
+        OnHealthChangedCallback?.Invoke();
+    }
 }

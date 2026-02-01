@@ -9,7 +9,7 @@ public class StaminaBarUI : MonoBehaviour
 
     void Start()
     {
-        stamina = FindObjectOfType<StaminaController>();
+        stamina = FindFirstObjectByType<StaminaController>();
 
         if (stamina != null)
         {
@@ -17,6 +17,31 @@ public class StaminaBarUI : MonoBehaviour
             UpdateStaminaUI(); // update lần đầu
         }
     }
+
+    // void OnEnable()
+    // {
+    //     PlayerController.OnPlayerSpawned += Setup;
+    // }
+
+    // void OnDisable()
+    // {
+    //     PlayerController.OnPlayerSpawned -= Setup;
+    // }
+
+    // void Setup()
+    // {
+    //     if (stamina != null)
+    //         stamina.OnStaminaChangedCallback -= UpdateStaminaUI;
+
+    //     stamina = FindFirstObjectByType<StaminaController>();
+
+    //     if (stamina != null)
+    //     {
+    //         stamina.OnStaminaChangedCallback += UpdateStaminaUI;
+    //         UpdateStaminaUI();
+    //     }
+    // }
+
 
     void UpdateStaminaUI()
     {

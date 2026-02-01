@@ -13,6 +13,23 @@ public class HealPotionUI : MonoBehaviour
         UpdateUI();
     }
 
+    // void OnEnable()
+    // {
+    //     PlayerController.OnPlayerSpawned += Setup;
+    // }
+
+    // void OnDisable()
+    // {
+    //     PlayerController.OnPlayerSpawned -= Setup;
+    // }
+
+    // void Setup()
+    // {
+    //     player = PlayerController.Instance;
+    //     UpdateUI();
+    // }
+
+
     void Update()
     {
         UpdateUI();

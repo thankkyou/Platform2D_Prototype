@@ -239,6 +239,7 @@ GameObject:
   - component: {fileID: 6572012235952788431}
   - component: {fileID: 5515112300098692754}
   - component: {fileID: 7187899276676885767}
+  - component: {fileID: 1645842059297174370}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -376,6 +377,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScreenFader
   fadeImage: {fileID: 5133211838217089307}
   fadeDuration: 1
+--- !u!114 &1645842059297174370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2521574230286911315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cddec58f03cb74f44ad21c83f67b95d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &2709552090768776818
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,13 +691,14 @@ GameObject:
   - component: {fileID: 249546129694175581}
   - component: {fileID: 785153784186315662}
   - component: {fileID: 5133211838217089307}
+  - component: {fileID: 4142455515422400990}
   m_Layer: 5
   m_Name: ScreenFader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &249546129694175581
 RectTransform:
   m_ObjectHideFlags: 0
@@ -742,6 +756,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4142455515422400990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7945323548740147932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0f02a7095fa1794595373017f68e66a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScreenFader
+  fadeImage: {fileID: 0}
+  fadeDuration: 1
 --- !u!1 &8244477923321832080
 GameObject:
   m_ObjectHideFlags: 0

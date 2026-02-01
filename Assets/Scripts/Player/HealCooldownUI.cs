@@ -11,6 +11,22 @@ public class HealCooldownUI : MonoBehaviour
         player = PlayerController.Instance;
     }
 
+    // void OnEnable()
+    // {
+    //     PlayerController.OnPlayerSpawned += Setup;
+    // }
+
+    // void OnDisable()
+    // {
+    //     PlayerController.OnPlayerSpawned -= Setup;
+    // }
+
+    // void Setup()
+    // {
+    //     player = PlayerController.Instance;
+    // }
+
+
     // Update is called once per frame
     void Update()
     {

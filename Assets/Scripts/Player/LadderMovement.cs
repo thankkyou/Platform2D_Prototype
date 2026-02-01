@@ -14,13 +14,13 @@ public class LadderMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 45f;
     private bool jumpPressed;
 
-
+    [HideInInspector]public PlayerStateList pState;
     Animator anim;
 
     void Start()
     {
         anim = GetComponent<Animator>();
-
+        pState = GetComponent<PlayerStateList>();
     }
 
     [SerializeField] private Rigidbody2D rb;
@@ -28,6 +28,15 @@ public class LadderMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (pState != null && !pState.alive)
+        {
+            isClimbing = false;
+            canClimb = false;
+            snappedToLadder = false;
+            rb.gravityScale = 9.5f;
+            return;
+        }
+
         vertical = Input.GetAxis("Vertical");
         horizontal = Input.GetAxis("Horizontal");
 
@@ -77,6 +86,8 @@ public class LadderMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (pState != null && !pState.alive) return;
+
         if (isClimbing)
         {
             rb.gravityScale = 0f;

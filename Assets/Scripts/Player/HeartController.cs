@@ -21,6 +21,32 @@ public class HeartController : MonoBehaviour
         UpdateHeartsHUD();
     }
 
+    // void OnEnable()
+    // {
+    //     PlayerController.OnPlayerSpawned += Setup;
+    // }
+
+    // void OnDisable()
+    // {
+    //     PlayerController.OnPlayerSpawned -= Setup;
+    // }
+
+    // void Setup()
+    // {
+    //     if (player != null)
+    //         player.OnHealthChangedCallback -= UpdateHeartsHUD;
+
+    //     player = PlayerController.Instance;
+
+    //     if (player == null) return;
+
+    //     player.OnHealthChangedCallback += UpdateHeartsHUD;
+
+    //     InstantiateHeartContainers();
+    //     UpdateHeartsHUD();
+    // }
+
+
     // Update is called once per frame
     void Update()
     {
