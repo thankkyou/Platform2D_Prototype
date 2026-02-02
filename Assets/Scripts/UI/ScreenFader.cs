@@ -8,10 +8,11 @@ using UnityEngine.SceneManagement;
 
 public class ScreenFader : MonoBehaviour
 {
+    public static ScreenFader Instance;
     [SerializeField] private float fadeTime;
     private Image fadeOutUIImage;
 
-    
+
     void Start()
     {
         fadeOutUIImage = GetComponent<Image>();
@@ -67,6 +68,47 @@ public class ScreenFader : MonoBehaviour
         fadeOutUIImage.color = new Color(fadeOutUIImage.color.r, fadeOutUIImage.color.g, fadeOutUIImage.color.b, _alpha);
 
         _alpha += Time.deltaTime * (1/fadeTime) * (_fadeDirection == FadeDirection.Out ? -1 : 1);
+    }
+
+
+
+    [SerializeField] CanvasGroup canvasGroup;
+    [SerializeField] float fadeDuration = 0.5f;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public IEnumerator FadeOutCoroutine()
+    {
+        float t = 0;
+
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(0, 1, t / fadeDuration);
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1;
+    }
+
+    public IEnumerator FadeInCoroutine()
+    {
+        float t = 0;
+
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(1, 0, t / fadeDuration);
+            yield return null;
+        }
+
+        canvasGroup.alpha = 0;
     }
     
 }
