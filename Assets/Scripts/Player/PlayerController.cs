@@ -869,15 +869,6 @@ public class PlayerController : MonoBehaviour
         isKnockback = false;
     }
 
-
-    //Kiểm tra Animation Die
-    // public delegate void OnPlayerDeath();
-    // public event OnPlayerDeath OnDeathAnimationFinished;
-    // public void DieAnimationFinished()
-    // {
-    //     OnDeathAnimationFinished?.Invoke();
-    // }
-
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -905,18 +896,22 @@ public class PlayerController : MonoBehaviour
         stamina?.ResetStamina();
         ForceUpdateHealthUI();
     }
-    //     // LUÔN FULL KHI LOAD SCENE (respawn)
+
+    // void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // {
+    //     // Respawn theo SaveData
+    //     if (!string.IsNullOrEmpty(SaveData.Instance.checkpointScene))
+    //     {
+    //         transform.position = SaveData.Instance.checkpointPos;
+    //     }
+
     //     Health = maxHealth;
     //     currentHealPotions = maxHealPotions;
     //     stamina?.ResetStamina();
-    //     ForceUpdateHealthUI();  // Force cho health UI
 
-    //     // Reset stamina về full
-    //     stamina?.ResetStamina();  // hoặc stamina?.FillStamina() tùy method của bạn
-
-    //     Debug.Log("OnSceneLoaded: Respawn/Scene load - Health forced to: " + Health + " / " + maxHealth);
-    //     Debug.Log("OnSceneLoaded: Potions = " + currentHealPotions);
+    //     ForceUpdateHealthUI();
     // }
+
 
     public void ForceUpdateHealthUI()
     {

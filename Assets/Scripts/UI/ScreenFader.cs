@@ -4,69 +4,69 @@ using System.Collections;
 using System.Threading.Tasks;
 using Unity.Mathematics;
 using System;
+using UnityEngine.SceneManagement;
 
 public class ScreenFader : MonoBehaviour
 {
-    public static ScreenFader Instance;
+    [SerializeField] private float fadeTime;
+    private Image fadeOutUIImage;
 
-    // [SerializeField] Image fadeImage;
-    // [SerializeField] float fadeDuration = 1f;
-
-    // void Awake()
-    // {
-    //     if (Instance == null)
-    //         Instance = this;
-    // }
-
-    // //Hiệu ứng fade
-    // public IEnumerator FadeOut()
-    // {
-    //     float t = 0;
-    //     while (t < 1)
-    //     {
-    //         t += Time.deltaTime / fadeDuration;
-    //         fadeImage.color = new Color(0, 0, 0, t);
-    //         yield return null;
-    //     }
-    // }
-
-
-    [SerializeField] CanvasGroup canvasGroup;
-    [SerializeField] float fadeDuration = 0.5f;
-
-    private void Awake()
+    
+    void Start()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-
-        DontDestroyOnLoad(gameObject);
+        fadeOutUIImage = GetComponent<Image>();
+    }
+    void Update()
+    {
+        
+    }
+    public enum FadeDirection
+    {
+        In,
+        Out,
     }
 
-    public IEnumerator FadeOutCoroutine()
+    public void CallFadeAndLoadScene(string _sceneToLoad)
     {
-        float t = 0;
+        StartCoroutine(FadeAndLoadScene(FadeDirection.In, _sceneToLoad));
+    }
 
-        while (t < fadeDuration)
+    public IEnumerator Fade(FadeDirection _fadeDireection)
+    {
+        float _alpha = _fadeDireection == FadeDirection.Out ? 1 : 0;
+        float _fadeEndValue = _fadeDireection == FadeDirection.Out ? 0 : 1;
+        if (_fadeDireection == FadeDirection.Out)
         {
-            t += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(0, 1, t / fadeDuration);
-            yield return null;
+            while (_alpha >= _fadeEndValue)
+            {
+                SetColorImage(ref _alpha, _fadeDireection);
+                yield return null;
+            }
+            fadeOutUIImage.enabled = false;
         }
-
-        canvasGroup.alpha = 1;
-    }
-
-    public IEnumerator FadeInCoroutine()
-    {
-        float t = 0;
-
-        while (t < fadeDuration)
+        else
         {
-            t += Time.deltaTime;
-            canvasGroup.alpha = Mathf.Lerp(1, 0, t / fadeDuration);
-            yield return null;
+            fadeOutUIImage.enabled = true;
+            while (_alpha <= _fadeEndValue)
+            {
+                SetColorImage(ref _alpha, _fadeDireection);
+                yield return null;
+            }
         }
-
-        canvasGroup.alpha = 0;
     }
+
+    public IEnumerator FadeAndLoadScene(FadeDirection _fadeDireection, string _sceneToLoad)
+    {
+        fadeOutUIImage.enabled= true;
+        yield return Fade(_fadeDireection);
+        SceneManager.LoadScene(_sceneToLoad);
+    }
+    
+    void SetColorImage(ref float _alpha, FadeDirection _fadeDirection)
+    {
+        fadeOutUIImage.color = new Color(fadeOutUIImage.color.r, fadeOutUIImage.color.g, fadeOutUIImage.color.b, _alpha);
+
+        _alpha += Time.deltaTime * (1/fadeTime) * (_fadeDirection == FadeDirection.Out ? -1 : 1);
+    }
+    
 }
