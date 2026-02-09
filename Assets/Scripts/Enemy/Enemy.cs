@@ -60,6 +60,7 @@ public class Enemy : MonoBehaviour
     protected virtual void Update()
     {
         UpdateEnemyStates();
+        if (GameManager.Instance.gameIsPaused) return;
     }
 
     protected void OnCollisionStay2D(Collision2D _other)

@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 5498050234012567089}
   - component: {fileID: 4653029789718174407}
   - component: {fileID: 7520889334876213918}
+  - component: {fileID: 537130231611091089}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -263,7 +264,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 1
+  m_Interpolate: 2
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
@@ -365,6 +366,7 @@ MonoBehaviour:
   lookingRight: 0
   invincible: 0
   healing: 0
+  alive: 1
 --- !u!114 &4653029789718174407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,6 +380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   jumpForce: 45
+  pState: {fileID: 0}
   rb: {fileID: 3480017498461886642}
 --- !u!114 &7520889334876213918
 MonoBehaviour:
@@ -394,3 +397,15 @@ MonoBehaviour:
   maxStamina: 100
   staminaRegenRate: 20
   dashStaminaCost: 50
+--- !u!114 &537130231611091089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8481274440428121683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 251ae0742cc67e44a8ec61c7bed8b9be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestroyInMainMenu

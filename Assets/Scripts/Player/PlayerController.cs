@@ -167,6 +167,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.isDialogueActive)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            anim.SetBool("Walking", false);
+            UpdateAnimatorParameters();
+            return;
+        } 
+
+        if (GameManager.Instance.gameIsPaused) return;
+        
         //Chặn input khi bị knockback
          if (isKnockback)
         {

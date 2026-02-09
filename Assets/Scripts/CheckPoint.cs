@@ -14,7 +14,7 @@ public class CheckPoint : MonoBehaviour
 
     void Update()
     {
-        if (playerInRange && !interacted && Input.GetKeyDown(KeyCode.E))
+        if (playerInRange && !interacted && Input.GetButtonDown("Interact"))
         {
             ActivateCheckpoint();
         }
