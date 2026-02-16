@@ -16,10 +16,10 @@ public class MocTinh : Enemy
         base.Start();
         rb.gravityScale = 12f;
     }
-    protected override void Awake()
-    {
-        base.Awake(); 
-    }
+    // protected override void Awake()
+    // {
+    //     base.Awake(); 
+    // }
 
     protected override void Update()
     {

@@ -54,7 +54,7 @@ public class QuyNhapTrang : Enemy
                     transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
                 }
 
-                RaycastHit2D _hit = Physics2D.Raycast(transform.position + _ledgeCheckStart, _wallCheckDir, ledgeCheckX * 10);
+                RaycastHit2D _hit = Physics2D.Raycast(transform.position + _ledgeCheckStart, _wallCheckDir, ledgeCheckX * 15);
                 if (_hit.collider != null && _hit.collider.gameObject.CompareTag("Player"))
                 {
                     ChangeState(EnemyStates.QuyNhapTrang_Suprised);

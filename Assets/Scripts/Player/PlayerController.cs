@@ -31,7 +31,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashSpeed;
     [SerializeField] private float dashTime;
     [SerializeField] private float dashCooldown;
-    [SerializeField] GameObject dashEffect;
     [Space(5)]
 
     [Header("Dash Through Settings")] //Dash xuyên qua enemy
@@ -277,6 +276,9 @@ public class PlayerController : MonoBehaviour
         && stamina != null
         && stamina.CanDash())
         {
+            if (isAttacking)
+                CancelAttack();
+            
             stamina.ConsumeDashStamina(); //TRỪ STAMINA
             StartCoroutine(Dash());
             dashed = true;
@@ -294,7 +296,7 @@ public class PlayerController : MonoBehaviour
         pState.dashing = true;
         pState.invincible = true;
 
-        anim.SetTrigger("Dashing");
+        anim.SetBool("Dashing", true);
 
         rb.gravityScale = 0;    //BỎ QUA TRỌNG LỰC KHI DASH (AIR DASH KHÔNG BỊ RỚT)
         rb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0);
@@ -306,8 +308,10 @@ public class PlayerController : MonoBehaviour
         true
         );
 
-        if (Grounded()) Instantiate(dashEffect, transform); //DASH VFX
         yield return new WaitForSeconds(dashTime); //THỜI GIAN DASH
+
+        anim.SetBool("Dashing", false);
+
 
          // TẮT DASH
         rb.gravityScale = gravity; //BẬT LẠI TRỌNG LỰC
@@ -320,6 +324,7 @@ public class PlayerController : MonoBehaviour
             LayerMask.NameToLayer("Attackable"),
             false
         );
+
 
         yield return new WaitForSeconds(dashCooldown); //THỜI GIAN HỒI LẠI DASH
         canDash = true;
@@ -703,6 +708,8 @@ public class PlayerController : MonoBehaviour
         isDead = false;
         // rb.linearVelocity = Vector2.zero;
         // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),LayerMask.NameToLayer("Attackable"),false);
 
         if (!pState.alive)
         {
