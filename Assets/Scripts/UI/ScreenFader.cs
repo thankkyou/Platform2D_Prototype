@@ -75,13 +75,13 @@ public class ScreenFader : MonoBehaviour
     [SerializeField] CanvasGroup canvasGroup;
     [SerializeField] float fadeDuration = 0.5f;
 
-    private void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+    // private void Awake()
+    // {
+    //     if (Instance == null) Instance = this;
+    //     else Destroy(gameObject);
 
-        DontDestroyOnLoad(gameObject);
-    }
+    //     DontDestroyOnLoad(gameObject);
+    // }
 
     public IEnumerator FadeOutCoroutine()
     {

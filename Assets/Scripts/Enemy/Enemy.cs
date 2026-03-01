@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -7,6 +8,18 @@ public class Enemy : MonoBehaviour
     [SerializeField]protected float speed;
     [SerializeField]protected float damage;
     [SerializeField] protected GameObject blood;
+
+    [Header("Knockback:")]
+    [SerializeField] protected float knockbackForce = 5f;
+    [SerializeField] protected float knockbackDuration = 0.2f;
+    protected bool isKnockback = false;
+    [Space(5)]
+
+    [Header("Stun Settings")]
+    [SerializeField] protected float stunDuration = 0.5f;
+    protected bool isStunned = false;
+    [Space(5)]
+
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
     protected Animator anim;
@@ -90,9 +103,51 @@ public class Enemy : MonoBehaviour
     public virtual void EnemyHit(float _damageDone)
     {
         health -= (int)_damageDone;
-        GameObject _blood = Instantiate(blood, transform.position, Quaternion.identity);
-        Destroy(_blood, 5.5f);
 
+        Vector3 bloodPos = transform.position + new Vector3(2, 1, 0);
+        
+        if (!isKnockback)
+            StartCoroutine(KnockbackRoutine());
+
+        if (!isStunned)
+            StartCoroutine(StunRoutine());
+
+        GameObject _blood = Instantiate(blood, bloodPos, Quaternion.identity);
+        Destroy(_blood, 1f);
+
+        StartCoroutine(HitFlash());
+    }
+
+    IEnumerator StunRoutine()
+    {
+        anim.enabled = false;
+        isStunned = true;
+        yield return new WaitForSeconds(stunDuration);
+        isStunned = false;
+        anim.enabled = true;
+    }
+
+    IEnumerator HitFlash()
+    {
+
+        sr.color = Color.red;
+        yield return new WaitForSeconds(0.5f);
+        sr.color = Color.white;
+    }
+
+    IEnumerator KnockbackRoutine()
+    {
+        isKnockback = true;
+
+        // Hướng bị đẩy = ngược hướng player
+        float dir = transform.position.x > PlayerController.Instance.transform.position.x ? 1f : -1f;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(new Vector2(dir * knockbackForce, 2f), ForceMode2D.Impulse);
+
+        yield return new WaitForSeconds(knockbackDuration);
+
+        isKnockback = false;
     }
 
     protected virtual void Death(float _destroyTime)

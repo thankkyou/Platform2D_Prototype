@@ -68,12 +68,25 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !gameIsPaused)
+       if (Input.GetKeyDown(KeyCode.Escape))
         {
-            pauseMenu.FadeUIIn(fadeTime);
-            Time.timeScale = 0;
-            gameIsPaused = true;
+            if (!gameIsPaused)
+            {
+                pauseMenu.FadeUIIn(fadeTime);
+                Time.timeScale = 0;
+                gameIsPaused = true;
+            }
+            else
+            {
+                pauseMenu.FadeUIOut(fadeTime);
+                UnPausedGame();
+            }
         }
+    }
+
+    public void SetPauseMenu(FadeUI menu)
+    {
+        pauseMenu = menu;
     }
 
     public void UnPausedGame()

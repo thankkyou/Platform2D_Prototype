@@ -15,6 +15,7 @@ public class FadeOnSceneLoad : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        StartCoroutine(ScreenFader.Instance.FadeInCoroutine());
+        if (ScreenFader.Instance != null)
+            StartCoroutine(ScreenFader.Instance.FadeInCoroutine());
     }
 }

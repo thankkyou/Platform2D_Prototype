@@ -40,6 +40,8 @@ public class MocTinh : Enemy
         switch (GetCurrentEnemyState)
         {
             case EnemyStates.MocTinh_Idle:
+                if (isKnockback || isStunned) break;
+
                 Vector3 _ledgeCheckStart = transform.localScale.x > 0 ? new Vector3(ledgeCheckX, 0) : new Vector3(-ledgeCheckX, 0);
                 Vector2 _wallCheckDir = transform.localScale.x > 0 ? transform.right : -transform.right;
 

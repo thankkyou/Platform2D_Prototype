@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     [Header("Wall Settings:")]
     [SerializeField] private Transform wallCheck;
     [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private LayerMask wallJumpLayer;
     [SerializeField] private float wallJumpForceX = 12f;
     [SerializeField] private float wallJumpForceY = 40f;
     [SerializeField] private float wallJumpLockTime = 0.15f;
@@ -308,6 +309,12 @@ public class PlayerController : MonoBehaviour
         true
         );
 
+        Physics2D.IgnoreLayerCollision(
+        LayerMask.NameToLayer("Player"),
+        LayerMask.NameToLayer("DashThrough"),
+        true
+        );
+
         yield return new WaitForSeconds(dashTime); //THỜI GIAN DASH
 
         anim.SetBool("Dashing", false);
@@ -323,6 +330,12 @@ public class PlayerController : MonoBehaviour
             LayerMask.NameToLayer("Player"),
             LayerMask.NameToLayer("Attackable"),
             false
+        );
+
+        Physics2D.IgnoreLayerCollision(
+        LayerMask.NameToLayer("Player"),
+        LayerMask.NameToLayer("DashThrough"),
+        false
         );
 
 
@@ -457,12 +470,18 @@ public class PlayerController : MonoBehaviour
             || Physics2D.Raycast(groundCheckPoint.position + new Vector3(groundCheckX, 0, 0), Vector2.down, groundCheckY, whatIsGround) //Kiểm tra mép trái
             || Physics2D.Raycast(groundCheckPoint.position + new Vector3(-groundCheckX, 0, 0), Vector2.down, groundCheckY, whatIsGround); //Kiểm tra mép phải
     }
+    
     //Kiểm tra tường bên cạnh
     public bool IsWalled()
     {
         return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
     }
 
+    public bool CanWallJump()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallJumpLayer);
+    }
+    
     //Xử lí nhảy
     void Jump()
     {
@@ -475,7 +494,7 @@ public class PlayerController : MonoBehaviour
         }
         
         //Nhảy tường
-        if (!Grounded() && IsWalled() && Input.GetButtonDown("Jump"))
+        if (!Grounded() && IsWalled() && CanWallJump() && Input.GetButtonDown("Jump"))
         {
             isWallJumping = true;
             isWallSliding = false;
@@ -497,12 +516,6 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        //Short-hop
-        if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0 && !Grounded() && !isWallJumping)
-        {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
-            pState.jumping = false;
-        }
         //Nhảy thường
         if (!pState.jumping)
         {
@@ -510,6 +523,9 @@ public class PlayerController : MonoBehaviour
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 pState.jumping = true;
+                coyoteTimeCounter = 0;   // tiêu thụ coyote time
+                jumpBufferCounter = 0;   // tiêu thụ buffer
+                airJumpCounter = maxAirJumps; // chặn air jump ngay sau đó
             }
             else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump")) //air-jump
             {
@@ -559,6 +575,7 @@ public class PlayerController : MonoBehaviour
     void WallSlide()
     {
         if (!Grounded()
+            && CanWallJump()
             && IsWalled()
             && rb.linearVelocity.y < 0
             && xAxis != 0 //đang giữ phím trái phải
@@ -624,16 +641,17 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(iFrameDuration / (numberOfFlash));
         }
         Physics2D.IgnoreLayerCollision(10, 8, false);
-
-        // pState.invincible = true;
-        // anim.SetTrigger("TakeDamage");
-        // yield return new WaitForSeconds(1f);
-        // pState.invincible = false;
     }
 
     //Xử lí khi nhân vật bị đánh
     public void TakeDamage(float _damage)
     {
+        // Chặn nhận dame khi đang dash, đã chết, đang knockback, hoặc invincible
+        if (pState.dashing || isDead || isKnockback || pState.invincible) return;
+
+        if (isHealingCasting)
+            CancelHeal();
+
         if (pState.alive)
         {
             Health -= Mathf.RoundToInt(_damage);
@@ -644,27 +662,11 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                anim.SetTrigger("TakeDamage");
                 ApplyKnockback();
                 StartCoroutine(iFrames());
             }
         }
-        if (pState.dashing || isDead || isKnockback) return; //không nhận dame
-
-        if (isHealingCasting) //đang heal mà nhận dame sẽ thoát heal
-            CancelHeal();
-
-        // Trừ máu 
-        // Health -= Mathf.RoundToInt(_damage);
-
-        
-        // anim.SetTrigger("TakeDamage");
-        // ApplyKnockback();
-        // StartCoroutine(iFrames());
-
-        // Debug.Log("TakeDamage: Health reduced to " + Health);
     }
-    
 
     void Die()
     {
@@ -691,17 +693,6 @@ public class PlayerController : MonoBehaviour
         // Invoke(nameof(Respawn), 1.5f);
         Debug.Log("Die: Health = " + Health + " → Respawn invoked");
     }
-
-    // IEnumerator Death()
-    // {
-    //     pState.alive = false;
-    //     Time.timeScale = 1;
-    //     anim.SetTrigger ("Death");
-
-    //     yield return new WaitForSeconds(0.9f);
-    //     Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),LayerMask.NameToLayer("Attackable"),true);
-    //     StartCoroutine(UIManager.Instance.ActivateDeathScreen());
-    // }
 
     public void Respawned()
     {
@@ -913,21 +904,6 @@ public class PlayerController : MonoBehaviour
         stamina?.ResetStamina();
         ForceUpdateHealthUI();
     }
-
-    // void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    // {
-    //     // Respawn theo SaveData
-    //     if (!string.IsNullOrEmpty(SaveData.Instance.checkpointScene))
-    //     {
-    //         transform.position = SaveData.Instance.checkpointPos;
-    //     }
-
-    //     Health = maxHealth;
-    //     currentHealPotions = maxHealPotions;
-    //     stamina?.ResetStamina();
-
-    //     ForceUpdateHealthUI();
-    // }
 
 
     public void ForceUpdateHealthUI()
