@@ -6,6 +6,7 @@ public class StaminaController : MonoBehaviour
     [SerializeField] private float maxStamina = 100f;
     [SerializeField] private float staminaRegenRate = 20f; // hồi mỗi giây
     [SerializeField] private float dashStaminaCost = 50f;
+    [SerializeField] private float projectileStaminaCost = 20f;
 
     private float currentStamina;
 
@@ -37,6 +38,11 @@ public class StaminaController : MonoBehaviour
         OnStaminaChangedCallback?.Invoke();
     }
 
+    public bool CanShoot()
+    {
+        return currentStamina >= projectileStaminaCost;
+    }
+
     public bool CanDash()
     {
         return currentStamina >= dashStaminaCost;
@@ -47,6 +53,13 @@ public class StaminaController : MonoBehaviour
         currentStamina -= dashStaminaCost;
         currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
 
+        OnStaminaChangedCallback?.Invoke();
+    }
+
+    public void ConsumeProjectileStamina()
+    {
+        currentStamina -= projectileStaminaCost;
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
         OnStaminaChangedCallback?.Invoke();
     }
 

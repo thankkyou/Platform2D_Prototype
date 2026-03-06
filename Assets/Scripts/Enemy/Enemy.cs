@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
     protected Animator anim;
+    AudioManager audioManager;
     protected enum EnemyStates
     {
         //Mộc Tinh
@@ -67,6 +68,8 @@ public class Enemy : MonoBehaviour
         player = PlayerController.Instance;
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+
     }
 
     // Update is called once per frame
@@ -104,17 +107,28 @@ public class Enemy : MonoBehaviour
     {
         health -= (int)_damageDone;
 
-        Vector3 bloodPos = transform.position + new Vector3(2, 1, 0);
-        
-        if (!isKnockback)
-            StartCoroutine(KnockbackRoutine());
+        Vector3 bloodPos = transform.position + new Vector3(0, 1, 0);
+        GameObject _blood = Instantiate(blood, bloodPos, Quaternion.identity);
 
+        SpriteRenderer bloodSr = _blood.GetComponent<SpriteRenderer>();
+
+        audioManager.PlaySFX(audioManager.enemyHit);
+
+        if (bloodSr != null)
+        {
+            float dir = transform.position.x > PlayerController.Instance.transform.position.x ? 1f : -1f;
+            bloodSr.flipX = dir < 0;
+        }
+
+        Destroy(_blood, 1f);
+
+        // if (!isKnockback)
+        //     StartCoroutine(KnockbackRoutine());
+        
         if (!isStunned)
             StartCoroutine(StunRoutine());
 
-        GameObject _blood = Instantiate(blood, bloodPos, Quaternion.identity);
-        Destroy(_blood, 1f);
-
+        
         StartCoroutine(HitFlash());
     }
 

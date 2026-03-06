@@ -20,7 +20,7 @@ public class FadeUI : MonoBehaviour
         StartCoroutine(FadeIn(_seconds));
     }
 
-    IEnumerator FadeOut(float _seconds)
+    public IEnumerator FadeOut(float _seconds)
     {
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
@@ -33,7 +33,7 @@ public class FadeUI : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator FadeIn(float _seconds)
+    public IEnumerator FadeIn(float _seconds)
     {
         
         canvasGroup.alpha = 0;

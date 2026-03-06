@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Death
   - LadderTop
+  - Audio
   layers:
   - Default
   - TransparentFX
@@ -44,6 +45,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3902813739
     locked: 0
   m_RenderingLayers:
   - Default

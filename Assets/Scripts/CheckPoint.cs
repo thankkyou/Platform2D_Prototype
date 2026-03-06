@@ -4,19 +4,24 @@ public class CheckPoint : MonoBehaviour
 {
     private bool playerInRange;
     public bool interacted;
+    private SpriteRenderer sr;
 
     private PlayerController player;
 
+    AudioManager audioManager;
+
     void Start()
     {
-        
+        sr = GetComponent<SpriteRenderer>();
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+
     }
 
     void Update()
     {
-        if (playerInRange && !interacted && Input.GetButtonDown("Interact"))
+        if (playerInRange && !interacted)
         {
-            ActivateCheckpoint();
+            ActivateCheckpoint(player);
         }
     }
 
@@ -24,10 +29,7 @@ public class CheckPoint : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            playerInRange = true;
-            player = collision.GetComponent<PlayerController>();
-
-            Debug.Log("Player entered checkpoint");
+           ActivateCheckpoint(collision.GetComponent<PlayerController>());
         }
     }
 
@@ -41,14 +43,13 @@ public class CheckPoint : MonoBehaviour
             Debug.Log("Player left checkpoint");
         }
     }
-    void ActivateCheckpoint()
+    void ActivateCheckpoint(PlayerController player)
     {
         interacted = true;
-
-        player.FullRestore(); // nếu bạn có hàm này
-
+        sr.color = Color.green;
+        player.FullRestore();
         GameManager.Instance.SetCheckpoint(this);
-
-        Debug.Log("Checkpoint activated");
+        audioManager.PlaySFX(audioManager.checkpoint);
+        Debug.Log("Checkpoint activated at: " + transform.position);
     }
 }

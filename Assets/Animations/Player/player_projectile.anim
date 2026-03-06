@@ -17,26 +17,69 @@ AnimationClip:
   m_PositionCurves: []
   m_ScaleCurves: []
   m_FloatCurves: []
-  m_PPtrCurves: []
+  m_PPtrCurves:
+  - serializedVersion: 2
+    curve:
+    - time: 0
+      value: {fileID: 3657064287605276972, guid: 9755aa6c3dee34545bad21b4c9af4e89, type: 3}
+    - time: 0.1
+      value: {fileID: -1246582925906637086, guid: 34d9b960ce6d11c4994c9a225ec5f974, type: 3}
+    - time: 0.2
+      value: {fileID: 7521100586314900241, guid: 77b3eb6f073d4fc41b1efdad58e77f9b, type: 3}
+    - time: 0.31666666
+      value: {fileID: 3114468755254816878, guid: 24968ae322ed46e4f9939aa2b2762adb, type: 3}
+    - time: 0.41666666
+      value: {fileID: -1360121031268026159, guid: d18ac8f472e45f949a2a317a8bf84046, type: 3}
+    - time: 0.51666665
+      value: {fileID: -7554715838262702198, guid: 87e8f79dc032109429aa223a9d37d985, type: 3}
+    - time: 0.6166667
+      value: {fileID: -5824419294197528867, guid: ee232db79bfdaaf4dbc5579c3ebb2413, type: 3}
+    - time: 0.73333335
+      value: {fileID: 3363395928260744366, guid: 4fb7ec5e7ef589841abd13e07eab25dc, type: 3}
+    - time: 0.8333333
+      value: {fileID: 7731644393308164925, guid: 7b4795c528884d246b9c4f737b87513b, type: 3}
+    attribute: m_Sprite
+    path: 
+    classID: 212
+    script: {fileID: 0}
+    flags: 2
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   m_ClipBindingConstant:
-    genericBindings: []
-    pptrCurveMapping: []
+    genericBindings:
+    - serializedVersion: 2
+      path: 0
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
+      isIntCurve: 0
+      isSerializeReferenceCurve: 0
+    pptrCurveMapping:
+    - {fileID: 3657064287605276972, guid: 9755aa6c3dee34545bad21b4c9af4e89, type: 3}
+    - {fileID: -1246582925906637086, guid: 34d9b960ce6d11c4994c9a225ec5f974, type: 3}
+    - {fileID: 7521100586314900241, guid: 77b3eb6f073d4fc41b1efdad58e77f9b, type: 3}
+    - {fileID: 3114468755254816878, guid: 24968ae322ed46e4f9939aa2b2762adb, type: 3}
+    - {fileID: -1360121031268026159, guid: d18ac8f472e45f949a2a317a8bf84046, type: 3}
+    - {fileID: -7554715838262702198, guid: 87e8f79dc032109429aa223a9d37d985, type: 3}
+    - {fileID: -5824419294197528867, guid: ee232db79bfdaaf4dbc5579c3ebb2413, type: 3}
+    - {fileID: 3363395928260744366, guid: 4fb7ec5e7ef589841abd13e07eab25dc, type: 3}
+    - {fileID: 7731644393308164925, guid: 7b4795c528884d246b9c4f737b87513b, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1
+    m_StopTime: 0.84999996
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
     m_HasAdditiveReferencePose: 0
-    m_LoopTime: 1
+    m_LoopTime: 0
     m_LoopBlend: 0
     m_LoopBlendOrientation: 0
     m_LoopBlendPositionY: 0
@@ -50,4 +93,18 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.73333335
+    functionName: SpawnArrow
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.8333333
+    functionName: OnFireAnimationEnd
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

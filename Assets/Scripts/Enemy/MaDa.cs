@@ -5,7 +5,6 @@ using UnityEngine;
 public class MaDa : Enemy
 {
     [SerializeField] private float chaseDistance;
-    [SerializeField] private float stunDuration;
     float timer;
 
     protected override void Start()

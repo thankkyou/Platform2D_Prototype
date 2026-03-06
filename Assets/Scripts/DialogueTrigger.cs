@@ -5,7 +5,7 @@ using UnityEngine;
 public class DialogueCharacter
 {
     public string name;
-    public Sprite icon;
+    // public Sprite icon;
 }
 
 [System.Serializable]
@@ -25,7 +25,8 @@ public class Dialogue
 public class DialogueTrigger : MonoBehaviour
 {
     public Dialogue dialogue;
-     private bool playerInRange = false;
+    private bool playerInRange = false;
+    private bool hasTriggeredOnce = false;
 
     public void TriggerDialogue()
     {
@@ -34,7 +35,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (playerInRange && Input.GetButtonDown("Interact"))
+        if (playerInRange && hasTriggeredOnce && Input.GetButtonDown("Interact"))
         {
             TriggerDialogue();
         }
@@ -45,6 +46,13 @@ public class DialogueTrigger : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             playerInRange = true;
+        }
+
+        // Lần đầu tiên tự động trigger
+        if (!hasTriggeredOnce)
+        {
+            hasTriggeredOnce = true;
+            TriggerDialogue();
         }
     }
 

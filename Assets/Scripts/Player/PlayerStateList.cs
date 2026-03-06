@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerStateList : MonoBehaviour
 {
+    public bool walking;
     public bool jumping = false;
     public bool dashing = false;
     public bool attack = false;
@@ -9,4 +10,5 @@ public class PlayerStateList : MonoBehaviour
     public bool invincible;
     public bool healing;
     public bool alive;
+    public bool firing;
 }

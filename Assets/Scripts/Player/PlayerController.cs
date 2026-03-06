@@ -111,18 +111,19 @@ public class PlayerController : MonoBehaviour
     private StaminaController stamina;
 
 
-    private float xAxis, yAxis;
+    private float xAxis;
     private float gravity;
 
     private bool canDash = true;
     private bool dashed;
-    private bool isGround;
+    public bool isGround;
     private float velocityY;
     private bool isWallJumping;
     private bool isWallSliding;
 
-    public static System.Action OnPlayerSpawned;
+    AudioManager audioManager;
 
+    public static System.Action OnPlayerSpawned;
 
     //Single Skeleton
     public static PlayerController Instance;
@@ -141,6 +142,8 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Awake: Player new instance created. Health set to: " + Health + " / " + maxHealth);
         OnPlayerSpawned?.Invoke();
 
+
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     //Lấy tham chiếu
@@ -183,6 +186,16 @@ public class PlayerController : MonoBehaviour
             UpdateAnimatorParameters();
             return;
         }
+
+        if (pState.firing)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            pState.walking = false;           
+            anim.SetBool("Walking", false);  
+            UpdateAnimatorParameters();
+            return;
+        }
+
         if (pState.alive)
         {
             GetInputs();
@@ -215,7 +228,6 @@ public class PlayerController : MonoBehaviour
     void GetInputs()
     {
         xAxis = Input.GetAxisRaw("Horizontal");
-        yAxis = Input.GetAxisRaw("Vertical");
         attack = Input.GetButtonDown("Attack");
     }
 
@@ -264,7 +276,11 @@ public class PlayerController : MonoBehaviour
         if (isWallJumping) return;
 
         rb.linearVelocity = new Vector2(walkSpeed * xAxis, rb.linearVelocity.y);
-        anim.SetBool("Walking", rb.linearVelocity.x != 0 && Grounded());
+
+        bool isWalking = rb.linearVelocity.x != 0 && Grounded();
+        pState.walking = isWalking;
+
+        anim.SetBool("Walking", isWalking);
     }
 
     void StartDash()
@@ -281,6 +297,7 @@ public class PlayerController : MonoBehaviour
                 CancelAttack();
             
             stamina.ConsumeDashStamina(); //TRỪ STAMINA
+            audioManager.PlaySFX(audioManager.playerDash);
             StartCoroutine(Dash());
             dashed = true;
         }
@@ -383,7 +400,9 @@ public class PlayerController : MonoBehaviour
         anim.SetInteger("ComboStep", comboStep);
         anim.SetTrigger("Attack");
         pState.attack = true;
+        // audioManager.PlayAttackSFX(comboStep);
         DoComboHit();
+
     }
 
     //HỦY ATK
@@ -423,6 +442,8 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("Attack");
 
             DoComboHit();
+
+            // audioManager.PlayAttackSFX(comboStep);
         }
         else
         {
@@ -433,6 +454,7 @@ public class PlayerController : MonoBehaviour
     //DAMEMAGE MULTIPLY
     void DoComboHit()
     {
+
         float finalDamage = damage;
 
         if (comboStep == 2)
@@ -441,6 +463,8 @@ public class PlayerController : MonoBehaviour
             finalDamage *= 1.5f;
 
         Hit(SideAttackTransform, SideAttackArea, finalDamage);
+        audioManager.PlayAttackSFX(comboStep);
+        
     }
 
     //Kiểm tra va chạm và gây dame
@@ -494,7 +518,7 @@ public class PlayerController : MonoBehaviour
         }
         
         //Nhảy tường
-        if (!Grounded() && IsWalled() && CanWallJump() && Input.GetButtonDown("Jump"))
+        if (!Grounded() && CanWallJump() && Input.GetButtonDown("Jump"))
         {
             isWallJumping = true;
             isWallSliding = false;
@@ -526,12 +550,14 @@ public class PlayerController : MonoBehaviour
                 coyoteTimeCounter = 0;   // tiêu thụ coyote time
                 jumpBufferCounter = 0;   // tiêu thụ buffer
                 airJumpCounter = maxAirJumps; // chặn air jump ngay sau đó
+                audioManager.PlaySFX(audioManager.playerJump);
             }
             else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump")) //air-jump
             {
                 pState.jumping = true;
                 airJumpCounter++;
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                audioManager.PlaySFX(audioManager.playerJump);
             }
         }
 
@@ -576,7 +602,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!Grounded()
             && CanWallJump()
-            && IsWalled()
             && rb.linearVelocity.y < 0
             && xAxis != 0 //đang giữ phím trái phải
             && Mathf.Sign(xAxis) == Mathf.Sign(transform.localScale.x) //hướng input trùng với hướng quay mặt
@@ -690,6 +715,7 @@ public class PlayerController : MonoBehaviour
 
         stamina?.ResetStamina(); //Không null => reset stamina
         StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+        audioManager.PlaySFX(audioManager.playerDeath);
         // Invoke(nameof(Respawn), 1.5f);
         Debug.Log("Die: Health = " + Health + " → Respawn invoked");
     }
@@ -774,6 +800,8 @@ public class PlayerController : MonoBehaviour
             && Mathf.Abs(rb.linearVelocity.x) < 0.01f)
         {
             StartHealCast();
+
+            audioManager.PlaySFX(audioManager.playerHeal);
         }
     }
 
@@ -890,7 +918,7 @@ public class PlayerController : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // Đặt vị trí spawn tại checkpoint đã lưu
-        SpawnPoint[] points = FindObjectsOfType<SpawnPoint>();
+        SpawnPoint[] points = FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None);
         foreach (var point in points)
         {
             if (point.spawnID == GameManager.Instance.nextSpawnID)
