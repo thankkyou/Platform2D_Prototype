@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 55.84, y: 8.96, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -85,12 +85,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -955609468180279937, guid: b216bb51ce305f542badc8f8a9edc064, type: 3}
+  m_Sprite: {fileID: 8647823593821616703, guid: 238d17320acf34e49a2055bd60c3e97e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.34, y: 0.16}
+  m_Size: {x: 0.48, y: 0.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -133,8 +133,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.34, y: 0.16}
-    newSize: {x: 0.34, y: 0.16}
+    oldSize: {x: 0.48, y: 0.48}
+    newSize: {x: 0.48, y: 0.48}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -184,9 +184,11 @@ MonoBehaviour:
   player: {fileID: 0}
   speed: 30
   damage: 1
-  blood: {fileID: 374571287414241874, guid: 44e4db98246c1414bbfb23c4b82354ef, type: 3}
-  chaseDistance: 30
-  stunDuration: 5
+  blood: {fileID: 9146761226605828342, guid: 1a5e6cf49db7cc74e9fd098ccb998b49, type: 3}
+  knockbackForce: 5
+  knockbackDuration: 0.2
+  stunDuration: 0.5
+  chaseDistance: 10
 --- !u!95 &296033793395914842
 Animator:
   serializedVersion: 7

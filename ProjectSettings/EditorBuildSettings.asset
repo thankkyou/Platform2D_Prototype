@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TutorialScene.unity
     guid: fae56d1bed9f9e4468b00aafacc7fe72
   - enabled: 1
+    path: Assets/Scenes/Jungle.unity
+    guid: 2c052e196d3d74947a52730fe4d17f91
+  - enabled: 1
     path: Assets/Scenes/Map 1.unity
     guid: d33a5f66a41b24e47a08b478ea08f4db
   - enabled: 1

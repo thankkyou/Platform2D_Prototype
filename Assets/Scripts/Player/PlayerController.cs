@@ -687,7 +687,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                ApplyKnockback();
+                // ApplyKnockback();
                 StartCoroutine(iFrames());
             }
         }
@@ -734,6 +734,27 @@ public class PlayerController : MonoBehaviour
             Health = maxHealth;
             currentHealPotions = maxHealPotions;
             ResetHeal();
+            
+            // Reset dash
+            canDash = true;
+            dashed = false;
+            pState.dashing = false;
+            pState.invincible = false;
+            rb.gravityScale = gravity;
+
+            // Bật lại va chạm nếu đang bị ignore
+            Physics2D.IgnoreLayerCollision(
+                LayerMask.NameToLayer("Player"),
+                LayerMask.NameToLayer("Attackable"),
+                false
+            );
+            Physics2D.IgnoreLayerCollision(
+                LayerMask.NameToLayer("Player"),
+                LayerMask.NameToLayer("DashThrough"),
+                false
+            );
+
+            anim.SetBool("Dashing", false);
             anim.Play("player_idle");
         }
     }
@@ -797,6 +818,7 @@ public class PlayerController : MonoBehaviour
             && !pState.dashing
             && !pState.jumping
             && !isAttacking
+            && !pState.firing
             && Mathf.Abs(rb.linearVelocity.x) < 0.01f)
         {
             StartHealCast();
@@ -879,31 +901,31 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = originalScale;
     }
 
-    void ApplyKnockback()
-    {
-        if (isKnockback) return; //chặn knockback chồng
+    // void ApplyKnockback()
+    // {
+    //     if (isKnockback) return; //chặn knockback chồng
 
-        isKnockback = true;
+    //     isKnockback = true;
 
-        // hướng bị đánh
-        float dir = pState.lookingRight ? -1f : 1f;
+    //     // hướng bị đánh
+    //     float dir = pState.lookingRight ? -1f : 1f;
 
-        rb.linearVelocity = Vector2.zero; //reset vận tốc
-        rb.AddForce(
-            new Vector2(dir * knockbackForceX, knockbackForceY),
-            ForceMode2D.Impulse
-        ); //đẩy
+    //     rb.linearVelocity = Vector2.zero; //reset vận tốc
+    //     rb.AddForce(
+    //         new Vector2(dir * knockbackForceX, knockbackForceY),
+    //         ForceMode2D.Impulse
+    //     ); //đẩy
 
-        anim.SetTrigger("TakeDamage");
+    //     anim.SetTrigger("TakeDamage");
 
-        StartCoroutine(KnockbackRoutine()); //chờ knockback xong
-    }
+    //     StartCoroutine(KnockbackRoutine()); //chờ knockback xong
+    // }
 
-    IEnumerator KnockbackRoutine()
-    {
-        yield return new WaitForSeconds(knockbackDuration);
-        isKnockback = false;
-    }
+    // IEnumerator KnockbackRoutine()
+    // {
+    //     yield return new WaitForSeconds(knockbackDuration);
+    //     isKnockback = false;
+    // }
 
     private void OnEnable()
     {
@@ -926,6 +948,13 @@ public class PlayerController : MonoBehaviour
                 transform.position = point.transform.position;
                 break;
             }
+        }
+
+        GameObject audioObj = GameObject.FindGameObjectWithTag("Audio");
+        if (audioObj != null)
+        {
+            // Cập nhật lại AudioManager mới mỗi khi qua màn
+            audioManager = audioObj.GetComponent<AudioManager>();
         }
         Health = maxHealth;
         currentHealPotions = maxHealPotions;

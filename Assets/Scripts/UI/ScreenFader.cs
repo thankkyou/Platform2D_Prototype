@@ -16,6 +16,13 @@ public class ScreenFader : MonoBehaviour
     void Start()
     {
         fadeOutUIImage = GetComponent<Image>();
+        
+        // Tự động mờ sáng (Fade In) mỗi khi bắt đầu một Scene
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f;
+            StartCoroutine(FadeInCoroutine());
+        }
     }
     void Update()
     {
@@ -75,13 +82,10 @@ public class ScreenFader : MonoBehaviour
     [SerializeField] CanvasGroup canvasGroup;
     [SerializeField] float fadeDuration = 0.5f;
 
-    // private void Awake()
-    // {
-    //     if (Instance == null) Instance = this;
-    //     else Destroy(gameObject);
-
-    //     DontDestroyOnLoad(gameObject);
-    // }
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public IEnumerator FadeOutCoroutine()
     {

@@ -22,6 +22,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip playerAttack2;
     public AudioClip playerAttack3;
 
+    [Header("Player Attack SFX")]
+    public AudioClip playerCollect;
     
     void Start()
     {

@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1547481331001106954}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.37, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0.145, y: 0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 4551223960976807481}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.215, y: 0.15500002, z: -0.2}
+  m_LocalPosition: {x: 0.212, y: 0.155, z: -0.2}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -141,6 +141,7 @@ GameObject:
   - component: {fileID: 7520889334876213918}
   - component: {fileID: 537130231611091089}
   - component: {fileID: 1348782048637373517}
+  - component: {fileID: 3622128323645194684}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -214,7 +215,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7625406061393645561, guid: cb41215ca68b06a4d9d0598436e18d26, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -333,6 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ec1c87f524d44d47a531f080384b7bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  walking: 0
   jumping: 0
   dashing: 0
   attack: 0
@@ -340,6 +342,7 @@ MonoBehaviour:
   invincible: 0
   healing: 0
   alive: 1
+  firing: 0
 --- !u!114 &7520889334876213918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,8 +356,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   maxStamina: 100
-  staminaRegenRate: 20
+  staminaRegenRate: 10
   dashStaminaCost: 50
+  projectileStaminaCost: 20
 --- !u!114 &537130231611091089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,7 +412,7 @@ MonoBehaviour:
   wallJumpLockTime: 0.15
   wallSlideSpeed: 2
   SideAttackTransform: {fileID: 9209717983523449122}
-  SideAttackArea: {x: 2, y: 2}
+  SideAttackArea: {x: 1.2, y: 2}
   attackableLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -428,3 +432,18 @@ MonoBehaviour:
   currentHealPotions: 0
   pState: {fileID: 0}
   isGround: 0
+--- !u!114 &3622128323645194684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8481274440428121683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a0dfcd5302c34849991b03e556e51c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerProjectile
+  projectileCooldown: 1
+  arrowPoints: {fileID: 7777524355702321288}
+  arrowPrefab: {fileID: 7799240094468143430, guid: bb9f92e5b1b949746952c2c1c66395ab, type: 3}

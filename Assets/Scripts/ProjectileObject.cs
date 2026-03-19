@@ -41,6 +41,12 @@ public class ProjectileObject : MonoBehaviour
             enemy.EnemyHit(damage);
         }
 
+        // Gây sát thương nếu trúng player
+        if (collision.CompareTag("Player"))
+        {
+            PlayerController.Instance.TakeDamage(damage);
+        }
+
     Destroy(gameObject);
     }
 

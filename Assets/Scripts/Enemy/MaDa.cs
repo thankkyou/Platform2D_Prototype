@@ -30,6 +30,7 @@ public class MaDa : Enemy
         switch (GetCurrentEnemyState)
         {
             case EnemyStates.MaDa_Idle:
+                FlipMaDa();
                 if (_dist < chaseDistance)
                 {
                     rb.linearVelocity = new Vector2(0, 0);
@@ -96,7 +97,13 @@ public class MaDa : Enemy
 
     void FlipMaDa()
     {
-        sr.flipX = PlayerController.Instance.transform.position.x < transform.position.x;
+        sr.flipX = PlayerController.Instance.transform.position.x > transform.position.x;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, chaseDistance);
     }
 
 }

@@ -174,9 +174,9 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.143
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -305,10 +305,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   musicAudioSource: {fileID: 7672384034336728750}
-  vfxAudioSource: {fileID: 4865475322903964035}
-  background: {fileID: 0}
-  checkpoint: {fileID: 0}
-  playerAttack: {fileID: 0}
-  playerHeal: {fileID: 0}
-  playerShoot: {fileID: 0}
-  playerDeath: {fileID: 0}
+  sfxAudioSource: {fileID: 4865475322903964035}
+  background: {fileID: 8300000, guid: 59f415243ac92b340b8ffb61e39ea10b, type: 3}
+  checkpoint: {fileID: 8300000, guid: 1a45098b542634c459c6e1d1068e411f, type: 3}
+  playerDash: {fileID: 8300000, guid: 042121de854160a49a642fd1882e06bc, type: 3}
+  playerJump: {fileID: 8300000, guid: 0d63a7b45a99f8b45903de999adb9204, type: 3}
+  playerHeal: {fileID: 8300000, guid: 7aca6e3f7d2ee5e4fbe7d12fe9852b8a, type: 3}
+  playerShoot: {fileID: 8300000, guid: f48aa1fd0d6320544b4d8fc724829656, type: 3}
+  playerDeath: {fileID: 8300000, guid: f3aa195ebcd3fb94999957f54e83d3a8, type: 3}
+  enemyHit: {fileID: 8300000, guid: 55dbf947a5e587d4b938abe66019f756, type: 3}
+  playerAttack1: {fileID: 8300000, guid: 3fc918c5f2f5a6a4ca619ea40f3759ea, type: 3}
+  playerAttack2: {fileID: 8300000, guid: 3fc918c5f2f5a6a4ca619ea40f3759ea, type: 3}
+  playerAttack3: {fileID: 8300000, guid: 3fc918c5f2f5a6a4ca619ea40f3759ea, type: 3}
+  playerCollect: {fileID: 8300000, guid: ba3493660c63cec4689e45cdf991e20f, type: 3}
