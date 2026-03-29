@@ -127,6 +127,7 @@ public class PlayerController : MonoBehaviour
 
     //Single Skeleton
     public static PlayerController Instance;
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)

@@ -51,7 +51,20 @@ public class PlayerProjectile : MonoBehaviour
         GameObject arrow = Instantiate(arrowPrefab, arrowPoints.position, Quaternion.identity);
         float direction = Mathf.Sign(transform.localScale.x);
         arrow.GetComponent<ProjectileObject>().SetDirection(direction);
-        audioManager.PlaySFX(audioManager.playerShoot);
+        
+        if (audioManager == null)
+        {
+            GameObject audioObj = GameObject.FindGameObjectWithTag("Audio");
+            if (audioObj != null)
+            {
+                audioManager = audioObj.GetComponent<AudioManager>();
+            }
+        }
+
+        if (audioManager != null)
+        {
+            audioManager.PlaySFX(audioManager.playerShoot);
+        }
     }
 
     public void OnFireAnimationEnd()

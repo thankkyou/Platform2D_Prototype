@@ -74,7 +74,13 @@ public class ScreenFader : MonoBehaviour
     {
         fadeOutUIImage.color = new Color(fadeOutUIImage.color.r, fadeOutUIImage.color.g, fadeOutUIImage.color.b, _alpha);
 
-        _alpha += Time.deltaTime * (1/fadeTime) * (_fadeDirection == FadeDirection.Out ? -1 : 1);
+        _alpha += Time.unscaledDeltaTime * (1/fadeTime) * (_fadeDirection == FadeDirection.Out ? -1 : 1);
+    }
+
+    public void LoadSceneImmediately(string _sceneToLoad)
+    {
+        Time.timeScale = 1f; // Đảm bảo game tiếp tục chạy (unpause)
+        SceneManager.LoadScene(_sceneToLoad);
     }
 
 
@@ -93,7 +99,7 @@ public class ScreenFader : MonoBehaviour
 
         while (t < fadeDuration)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             canvasGroup.alpha = Mathf.Lerp(0, 1, t / fadeDuration);
             yield return null;
         }
@@ -107,7 +113,7 @@ public class ScreenFader : MonoBehaviour
 
         while (t < fadeDuration)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             canvasGroup.alpha = Mathf.Lerp(1, 0, t / fadeDuration);
             yield return null;
         }

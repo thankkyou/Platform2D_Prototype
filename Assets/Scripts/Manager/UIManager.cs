@@ -8,11 +8,21 @@ public class UIManager : MonoBehaviour
     public ScreenFader screenFader;
     public static UIManager Instance;
     [SerializeField] GameObject deathScreen;
+    [SerializeField] GameObject victoryScreen; // Màn hình chiến thắng
 
     void Awake() 
     {
         Instance = this;
         screenFader = GetComponent<ScreenFader>();
+    }
+
+    public void ActivateVictoryScreen()
+    {
+        if (victoryScreen != null)
+        {
+            victoryScreen.SetActive(true);
+            Time.timeScale = 0f; // Dừng thời gian (game pause)
+        }
     }
 
     public IEnumerator ActivateDeathScreen()
