@@ -35,15 +35,15 @@ public class FadeUI : MonoBehaviour
 
     public IEnumerator FadeIn(float _seconds)
     {
-        
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 0;
         while (canvasGroup.alpha < 1)
         {
             canvasGroup.alpha += Time.unscaledDeltaTime / _seconds;
             yield return null;
         }
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
+        canvasGroup.alpha = 1;
         yield return null;
     }
 

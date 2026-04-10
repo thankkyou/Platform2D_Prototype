@@ -1,6 +1,6 @@
 
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,6 +39,37 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
         DontDestroyOnLoad(gameObject);
+        Application.targetFrameRate = 60;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Tự động tìm và đăng ký PauseMenu sau mỗi scene load
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        pauseMenu = null;
+        PauseMenuRegistrar registrar = FindFirstObjectByType<PauseMenuRegistrar>(FindObjectsInactive.Include);
+        if (registrar != null)
+        {
+            FadeUI fadeUI = registrar.GetComponent<FadeUI>();
+            if (fadeUI != null)
+            {
+                SetPauseMenu(fadeUI);
+                Debug.Log("[GameManager] Đã tìm thấy và gán PauseMenu tự động.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] Không tìm thấy PauseMenuRegistrar trong scene: " + scene.name);
+        }
     }
 
 
@@ -70,6 +101,12 @@ public class GameManager : MonoBehaviour
     {
        if (Input.GetKeyDown(KeyCode.Escape))
         {
+            if (pauseMenu == null)
+            {
+                Debug.LogWarning("[GameManager] pauseMenu là null! Kiểm tra PauseMenuRegistrar đã được gắn vào Pause Menu trong scene chưa.");
+                return;
+            }
+
             if (!gameIsPaused)
             {
                 pauseMenu.FadeUIIn(fadeTime);
@@ -91,6 +128,8 @@ public class GameManager : MonoBehaviour
 
     public void UnPausedGame()
     {
+        if (pauseMenu != null)
+            pauseMenu.FadeUIOut(fadeTime);
         Time.timeScale = 1;
         gameIsPaused = false;
     }

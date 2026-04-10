@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Linq.Expressions;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -83,9 +81,11 @@ public class PlayerController : MonoBehaviour
     [Space(5)]
 
     [Header("Knockback Settings")]
+#pragma warning disable CS0414
     [SerializeField] private float knockbackForceX = 6f;
     [SerializeField] private float knockbackForceY = 2f;
     [SerializeField] private float knockbackDuration = 0.2f;
+#pragma warning restore CS0414
     private bool isKnockback;
     [Space(5)]
 

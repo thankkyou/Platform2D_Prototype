@@ -68,5 +68,5 @@
         "*.slnx": "*.csproj"
     },
     "dotnet.defaultSolution": "Platform2D_Prototype.slnx",
-    "workbench.colorTheme": "Default Dark Modern"
+    "workbench.colorTheme": "Dark Modern"
 }

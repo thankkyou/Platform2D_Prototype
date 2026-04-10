@@ -16,7 +16,7 @@ public class ScreenFader : MonoBehaviour
     void Start()
     {
         fadeOutUIImage = GetComponent<Image>();
-        
+
         // Tự động mờ sáng (Fade In) mỗi khi bắt đầu một Scene
         if (canvasGroup != null)
         {
@@ -95,6 +95,7 @@ public class ScreenFader : MonoBehaviour
 
     public IEnumerator FadeOutCoroutine()
     {
+        canvasGroup.blocksRaycasts = true;
         float t = 0;
 
         while (t < fadeDuration)
@@ -109,6 +110,7 @@ public class ScreenFader : MonoBehaviour
 
     public IEnumerator FadeInCoroutine()
     {
+        canvasGroup.blocksRaycasts = true;
         float t = 0;
 
         while (t < fadeDuration)
@@ -119,6 +121,7 @@ public class ScreenFader : MonoBehaviour
         }
 
         canvasGroup.alpha = 0;
+        canvasGroup.blocksRaycasts = false; // Không chặn click khi vô hình
     }
     
 }
