@@ -715,7 +715,13 @@ public class PlayerController : MonoBehaviour
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"),LayerMask.NameToLayer("Attackable"),true);
 
         stamina?.ResetStamina(); //Không null => reset stamina
-        StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+        // Hiện GameOverOverlay — FindCurrent() tìm được cả khi object đang inactive
+        // Truyền 'this' (PlayerController luôn active) để chạy coroutine thay cho GameOverOverlay
+        DeathScreenController dsc = DeathScreenController.FindCurrent();
+        if (dsc != null)
+            dsc.Show(this);
+        else
+            Debug.LogError("[PlayerController] Không tìm thấy DeathScreenController! Hãy gắn script vào GameOverOverlay.");
         audioManager.PlaySFX(audioManager.playerDeath);
         // Invoke(nameof(Respawn), 1.5f);
         Debug.Log("Die: Health = " + Health + " → Respawn invoked");

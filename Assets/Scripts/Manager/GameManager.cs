@@ -93,8 +93,26 @@ public class GameManager : MonoBehaviour
         }
         
         PlayerController.Instance.transform.position = respawnPoint;
-        StartCoroutine(UIManager.Instance.DeactivateDeathScreen());
+
+        // Death Screen tự ẩn khi nút Respawn được nhấn (xử lý trong DeathScreenController.OnRespawnClicked)
+
         PlayerController.Instance.Respawned();
+    }
+
+    public void OnRespawnClicked()
+    {
+        // Ẩn GameOverOverlay
+        DeathScreenController dsc = DeathScreenController.FindCurrent();
+        if (dsc != null)
+            dsc.gameObject.SetActive(false);
+        else
+        {
+            // Fallback: tìm qua UIManager nếu không có DeathScreenController
+            if (UIManager.Instance != null)
+                StartCoroutine(UIManager.Instance.DeactivateDeathScreen());
+        }
+
+        RespawnPlayer();
     }
 
     public void Update()

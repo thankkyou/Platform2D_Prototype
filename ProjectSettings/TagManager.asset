@@ -9,6 +9,8 @@ TagManager:
   - Death
   - LadderTop
   - Audio
+  - DeathScreen
+  - VictoryScreen
   layers:
   - Default
   - TransparentFX

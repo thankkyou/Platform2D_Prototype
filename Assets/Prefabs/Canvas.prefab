@@ -3445,16 +3445,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7241333578179086559, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7560180204357269521}
+    - target: {fileID: 7241333578179086559, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7241333578179086559, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: RespawnPlayer
+      value: OnRespawnClicked
       objectReference: {fileID: 0}
     - target: {fileID: 7241333578179086559, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameManager, Assembly-CSharp
+      value: DeathScreenController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7241333578179086559, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -3463,13 +3467,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1010211024174933362, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7560180204357269521}
   m_SourcePrefab: {fileID: 100100000, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
 --- !u!1 &2687511113255878580 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1010211024174933362, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
   m_PrefabInstance: {fileID: 3120722467126418118}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7560180204357269521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2687511113255878580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a693a897a3de46a449141ddb13bcc618, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathScreenController
+  showDelay: 0.8
 --- !u!224 &8905663709994705163 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5825491301918112717, guid: 3739cdb42ec9e1a46ba212bc6bc1eab6, type: 3}
